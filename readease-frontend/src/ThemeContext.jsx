@@ -5,9 +5,15 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState('light');
 
-  useEffect(() => {
+  /*useEffect(() => {
     document.body.className = theme;
+  }, [theme]);*/
+
+  useEffect(() => {
+    document.body.classList.remove("light", "dark");
+    document.body.classList.add(theme);
   }, [theme]);
+
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
