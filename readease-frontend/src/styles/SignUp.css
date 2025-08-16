@@ -1,0 +1,138 @@
+.signup-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Lexend', sans-serif;
+}
+
+.signup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.title-section {
+  text-align: center;
+  width: 100%;
+}
+
+h1 {
+  margin: 0;
+}
+
+h2 {
+  margin-top: 5px;
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+
+.toggle-section {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  text-align: right;
+}
+
+.mode-text {
+  font-size: 0.8rem;
+  color: gray;
+  margin-top: 4px;
+}
+
+input {
+  display: block;
+  width: 100%;
+  height: 44px;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.password-box {
+  position: relative;
+}
+
+.password-box input {
+  width: 100%;
+  height: 44px;
+  padding-right: 35px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.password-box span {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: gray;
+}
+
+.signup-btn, .login-btn {
+  width: 100%;
+  height: 44px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+body.dark .signup-btn, body.dark .login-btn {
+  background-color: #1100FF;
+}
+
+body.light .signup-btn, body.light .login-btn {
+  background-color: #0A0550;
+}
+
+.bottom-section {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.bottom-section p {
+  margin-bottom: 4px;
+}
+
+/* Theme-specific body styles */
+body.light {
+  background-color: white;
+  color: black;
+}
+
+body.dark {
+  background-color: black;
+  color: white;
+}
+
+.signup-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Lexend', sans-serif;
+  padding: 20px;
+}
+
+.signup-box {
+  background-color: inherit;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 400px;
+}
+
+body.dark .signup-box {
+  background-color: black;
+  border: 1px solid #333;
+  box-shadow: 0 0 20px rgba(255,255,255,0.05);
+}
+
