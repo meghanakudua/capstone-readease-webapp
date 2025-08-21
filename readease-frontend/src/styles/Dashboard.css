@@ -14,7 +14,7 @@ body.dark {
 }
 
 /* Navbar */
-.navbar {
+/*.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +24,69 @@ body.dark {
   position: sticky;
   top: 0;
   z-index: 1000;
+}*/
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;                /* ✅ Always stay within the viewport */
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;            /* ✅ Reduce padding to avoid overflow */
+  box-sizing: border-box;     /* ✅ Prevent content spill */
+  background-color: var(--navbar-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+  overflow: hidden;           /* ✅ No elements escape the navbar */
 }
+
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;      /* ✅ Prevents shrinking issues */
+  overflow: hidden;    /* ✅ Avoids overflow */
+}
+
+
+/* Light mode variables */
+body.light {
+  --navbar-bg: #ffffff;
+}
+
+/* Dark mode variables */
+body.dark {
+  --navbar-bg: #1a1a1a;
+}
+
+.dashboard-container {
+  width: 100%;
+  padding-top: 60px;
+  box-sizing: border-box;
+  overflow-x: hidden; /* ✅ Avoids horizontal scroll */
+}
+
+
+/*.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text);
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}*/
 
 .nav-left h1 {
   margin: 0;
@@ -80,21 +142,43 @@ body.dark .nav-button {
 
 /* Sidebar with tools */
 .sidebar {
-  width: 250px;
+  position: fixed;               /* ✅ Stays fixed */
+  top: 60px;                     /* ✅ Below the navbar */
+  left: 0;
+  width: 250px;                  /* Adjust as per your design */
+  height: calc(100vh - 60px);    /* ✅ Full height minus navbar */
+  background-color: var(--sidebar-bg);
   padding: 20px;
-  border-right: 1px solid #ccc;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-right: 1px solid #ccc;   /* Optional separator */
+  z-index: 900;                  /* ✅ Below navbar, above main */
+  overflow-y: auto;              /* Scroll within sidebar if needed */
 }
 
+/* Sidebar heading */
+.sidebar h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+/* Buttons inside the sidebar */
 .sidebar button {
-  display: block;
-  width: 100%;
-  margin-bottom: 12px;
   padding: 10px;
-  background-color: #eee;
+  background-color: var(--button-bg);
+  color: var(--button-text);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar button:hover {
+  background-color: var(--button-hover-bg);
 }
 
 body.dark .sidebar button {
@@ -104,10 +188,12 @@ body.dark .sidebar button {
 
 /* Main content area */
 .main-area {
-  flex-grow: 1;
+  margin-left: 250px; /* ✅ Same as sidebar width */
   padding: 20px;
+  min-height: calc(100vh - 60px);
+  background-color: var(--main-bg);
+  transition: margin-left 0.3s ease;
 }
-
 /*.upload-box {
   margin-top: 20px;
   border: 2px dashed #aaa;
@@ -258,13 +344,13 @@ body.dark .page {
 }
 
 
-.file-preview {
+/*.file-preview {
   display: flex;
   flex-direction: column;
-  align-items: center;  /* center horizontally */
-  padding: 0 0.5rem;    /* 0.5rem padding left/right */
-  margin-top: 20px; /* 🔥 Add space below upload box */
-  gap: 20px;        /* 🔥 Space between elements inside */
+  align-items: center;  
+  padding: 0 0.5rem;    
+  margin-top: 20px; 
+  gap: 20px;       
 }
 
 .page-block {
@@ -274,29 +360,110 @@ body.dark .page {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   width: 80%;
-  max-width: 595px;  /* A4 width */
-  height: 842px;     /* A4 height fixed */
+  max-width: 595px;  
+  height: 842px;     
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px; /* 🔥 Ensure spacing if multiple rendered */
+  margin-bottom: 20px; 
+}*/
+
+.page-text {
+  white-space: pre-line; /* respects spaces and line breaks */
+  line-height: 1.6;
+  font-size: 16px;
 }
 
+.page-text ul {
+  margin-left: 20px;
+}
+
+.page-text li {
+  margin-bottom: 6px;
+}
+
+
+.file-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* ✅ Take full width */
+  padding: 0 1rem;
+  margin-top: 20px;
+  gap: 30px;
+}
+
+/*.page-block {
+  width: 100%;
+  max-width: 800px;       
+  height: 842px;          
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto 40px auto; 
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  overflow: hidden;       
+}*/
+
+.page-block {
+  background-color: var(--secondary-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  /* ✅ Set fixed size */
+  width: 800px;          /* Adjust to your liking */
+  height: 1120px;        /* Matches A4 ratio roughly */
+
+  margin: 20px auto;     /* Center pages */
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  /* ✅ Prevent text from overflowing outside */
+  overflow: hidden;
+}
 
 .page-text {
   flex: 1;
-  padding: 20px;
+  overflow-y: auto;  /* ✅ Scroll text inside the page */
+  padding-right: 10px;
   white-space: pre-wrap;
-  font-family: 'Lexend', sans-serif;
-  font-size: 18px;
-  line-height: 1.8;
-  overflow-y: auto; /* optional: allow scrolling if text overflows page */
+  word-break: break-word;
 }
+
 
 .page-controls {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin-top: 10px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.page-controls.top-controls {
+  margin-bottom: 15px;
+}
+
+.page-controls button {
+  background-color: #4a90e2;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.page-controls button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-weight: bold;
+  font-size: 14px;
 }
 
 .page-header {

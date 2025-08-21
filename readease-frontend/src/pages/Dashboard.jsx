@@ -11,8 +11,7 @@ const Dashboard = () => {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
-  const [fileContent, setFileContent] = useState(''); // 👈 New state
-  // ⭐ CHANGED: added currentPage state
+  const [fileContent, setFileContent] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
 
   const goNext = () => {
@@ -26,7 +25,6 @@ const Dashboard = () => {
       setCurrentPage(prev => prev - 1);
     }
   };
-
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -42,13 +40,11 @@ const Dashboard = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
         withCredentials: true,
       });
-      console.log('Full upload response:', res.data); // ✅ To see the whole response
-      console.log('Extracted text:', res.data.content); // ✅ THIS LINE
 
       console.log('Uploaded file:', res.data);
       setUploadStatus(`✅ ${res.data.message}`);
       setUploadedFileUrl(res.data.fileUrl);
-      setFileContent(res.data.content); // 👈 Set extracted content
+      setFileContent(res.data.content); // Array of pages
 
     } catch (err) {
       console.error(err);
@@ -60,14 +56,6 @@ const Dashboard = () => {
     }
   };
 
-  /*const handleLogout = async () => {
-    try {
-      await axios.post('http://localhost:5000/logout', {}, { withCredentials: true });
-      navigate('/login');
-    } catch (err) {
-      console.error('Logout failed', err);
-    }
-  };*/
   const handleLogout = async () => {
     try {
       await axios.post('http://localhost:5000/api/auth/logout');
@@ -79,7 +67,16 @@ const Dashboard = () => {
     navigate('/login');
   };
 
-
+  // ✅ Function to format text content into HTML paragraphs
+  const formatTextToHTML = (text) => {
+    if (!text) return '';
+    return text
+      .split('\n') // Split by line breaks
+      .map(line => line.trim()) // Remove extra spaces
+      .filter(line => line.length > 0) // Ignore empty lines
+      .map(line => `<p>${line}</p>`) // Wrap in <p>
+      .join(''); // Join paragraphs
+  };
 
   return (
     <div className={`dashboard-container ${theme}`}>
@@ -132,33 +129,28 @@ const Dashboard = () => {
               accept=".pdf,.doc,.docx"
               onChange={handleFileUpload}
             />
-            {uploadStatus && (
-              <p style={{ marginTop: '10px' }}>
-                {uploadStatus}
-                {uploadedFileUrl && (
-                  <>
-                    {' '}
-                  </>
-                )}
-              </p>
-            )}
+            {uploadStatus && <p style={{ marginTop: '10px' }}>{uploadStatus}</p>}
           </div>
 
           {/* Display Only One Page at a Time */}
           {fileContent && Array.isArray(fileContent) && fileContent.length > 0 && (
             <div className="file-preview">
-              <div className="page-block">
-                <div className="page-header">
-                  <strong>Page {currentPage + 1} of {fileContent.length}</strong>
-                </div>
-                <div className="page-text">{fileContent[currentPage]}</div>
-              </div>
-
               {/* Page Navigation */}
-              <div className="page-controls">
+              <div className="page-controls top-controls">
                 <button onClick={goPrev} disabled={currentPage === 0}>⬅ Previous</button>
+                <span className="page-info">
+                  Page {currentPage + 1} of {fileContent.length}
+                </span>
                 <button onClick={goNext} disabled={currentPage === fileContent.length - 1}>Next ➡</button>
               </div>
+
+              {/* ✅ Render as formatted HTML */}
+              <div
+                className="page-text"
+                dangerouslySetInnerHTML={{ __html: fileContent[currentPage] }}
+              ></div>
+
+
             </div>
           )}
         </main>
