@@ -13,6 +13,7 @@ const Dashboard = () => {
   const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const [fileContent, setFileContent] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const goNext = () => {
     if (currentPage < fileContent.length - 1) {
@@ -44,8 +45,7 @@ const Dashboard = () => {
       console.log('Uploaded file:', res.data);
       setUploadStatus(`✅ ${res.data.message}`);
       setUploadedFileUrl(res.data.fileUrl);
-      setFileContent(res.data.content); // Array of pages
-
+      setFileContent(res.data.content);
     } catch (err) {
       console.error(err);
       if (err.response?.data?.error) {
@@ -67,15 +67,39 @@ const Dashboard = () => {
     navigate('/login');
   };
 
-  // ✅ Function to format text content into HTML paragraphs
-  const formatTextToHTML = (text) => {
-    if (!text) return '';
-    return text
-      .split('\n') // Split by line breaks
-      .map(line => line.trim()) // Remove extra spaces
-      .filter(line => line.length > 0) // Ignore empty lines
-      .map(line => `<p>${line}</p>`) // Wrap in <p>
-      .join(''); // Join paragraphs
+  // ✅ Speak Selected Text
+  const handleSpeakSelected = () => {
+    const selectedText = window.getSelection().toString();
+    if (!selectedText) {
+      alert("Please select some text to read.");
+      return;
+    }
+    speakText(selectedText);
+  };
+
+  // ✅ Speak Entire Page
+  const handleSpeakPage = () => {
+    const pageText = fileContent[currentPage];
+    speakText(pageText);
+  };
+
+  // ✅ Stop Speaking
+  const handleStopSpeaking = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
+
+  // ✅ Generic function to speak text
+  const speakText = (text) => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel(); // Stop any ongoing speech
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.onend = () => setIsSpeaking(false); // Reset when finished
+      setIsSpeaking(true);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert('Sorry, your browser does not support text-to-speech.');
+    }
   };
 
   return (
@@ -103,8 +127,8 @@ const Dashboard = () => {
         {/* Sidebar */}
         <aside className="sidebar">
           <h3>Reading Tools</h3>
-          <button>🔊 Speak Selected</button>
-          <button>📄 Speak Page</button>
+          <button onClick={handleSpeakSelected}>🔊 Speak Selected</button>
+          <button onClick={handleSpeakPage}>📄 Speak Page</button>
           <button>🔠 Increase Font Size</button>
           <button>🎨 Background Color</button>
           <button>🎨 Font Color</button>
@@ -132,7 +156,7 @@ const Dashboard = () => {
             {uploadStatus && <p style={{ marginTop: '10px' }}>{uploadStatus}</p>}
           </div>
 
-          {/* Display Only One Page at a Time */}
+          {/* Display One Page at a Time */}
           {fileContent && Array.isArray(fileContent) && fileContent.length > 0 && (
             <div className="file-preview">
               {/* Page Navigation */}
@@ -144,13 +168,20 @@ const Dashboard = () => {
                 <button onClick={goNext} disabled={currentPage === fileContent.length - 1}>Next ➡</button>
               </div>
 
+              {/* ✅ Show Stop Button only when speaking */}
+              {isSpeaking && (
+                <div style={{ marginTop: '10px' }}>
+                  <button className="nav-button" onClick={handleStopSpeaking}>
+                    ⏹ Stop Speaking
+                  </button>
+                </div>
+              )}
+
               {/* ✅ Render as formatted HTML */}
               <div
                 className="page-text"
                 dangerouslySetInnerHTML={{ __html: fileContent[currentPage] }}
               ></div>
-
-
             </div>
           )}
         </main>
